@@ -68,8 +68,12 @@ endif
 bsp:
 	$(MAKE) bb-exec BB_ARGS="$(TARGET)"
 
-sdk:
+sdk: bsp
 	$(MAKE) bb-exec BB_ARGS="-c populate_sdk $(TARGET)"
+
+sdcard:
+	@echo "Generate sdcard image"
+	@(source ./sources/poky/oe-init-build-env $(BUILD_DIR) && ../sources/poky/scripts/wic create sdimage-bootpart -e $(TARGET)) 
 
 all: bsp sdk
 
@@ -79,6 +83,7 @@ help:
 	$(info make help                          - this help text)
 	$(info make LOCAL_CONF=<local.conf> all   - build bsp and sdk)
 	$(info make LOCAL_CONF=<local.conf> bsp   - build BSP target images)
+	$(info make LOCAL_CONF=<local.conf> sdcard - build BSP target sdcard image)
 	$(info make LOCAL_CONF=<local.conf> sdk   - build cross-toolchain installer)
 	$(info make distclean                     - remove build)
 	$(info make bb-exec BB_ARGS=<args>        - execute bitbake with arguments, for other Yocto commands)
